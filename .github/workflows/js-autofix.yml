@@ -214,7 +214,9 @@ jobs:
           fi
 
           # Enable auto-merge (squash). If already enabled, this is a no-op.
-          gh pr merge "$PR_NUM" --auto --squash || true
+          # Fork-local: repos without branch-protection rules cannot enable
+          # auto-merge, so fall back to merging directly.
+          gh pr merge "$PR_NUM" --auto --squash || gh pr merge "$PR_NUM" --squash || true
 
       - name: Wait for merge, auto-close on failure or stale
         env:
